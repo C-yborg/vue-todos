@@ -1,7 +1,7 @@
 import Mock, { mock } from "mockjs"
 let Todos = [] //定义我们需要的数据
 const COUNT = [1, 2, 3, 4, 5] //数据长度
-for (let i = 1; i < COUNT.length; i++) {
+for (let i = 1; i <= COUNT.length; i++) {
     Todos.push(
         Mock.mock({
             id: Mock.Random.guid(),
