@@ -3,7 +3,7 @@
         <!-- 头部模块 -->
         <nav>
             <!-- 当用户浏览车窗口尺寸小于40em时候，显示手机端的菜单图标 -->
-            <div class="nav-group">
+            <div class="nav-group" @click="$store.dispatch('updateMenu')" v-show="!isUpdate">
                 <a class="nav-item">
                     <span class="icon-list-unordered"> </span>
                 </a>
@@ -69,6 +69,7 @@ export default {
                 //代办单项列表
             ],
             text: "", //用户输入单项项绑定的输入
+            isUpdate: false, // 新增修改状态
         }
     },
     watch: {
