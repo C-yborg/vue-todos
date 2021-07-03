@@ -3,7 +3,8 @@
         <a
             @click="goList(item.id)"
             class="list-todo list activeListClass"
-            v-for="(item, index) in items"
+            :class="{ active: item.id === todoId }"
+            v-for="(item, index) in todoList"
             :key="index"
         >
             <!-- v-for 列表渲染-->
@@ -35,6 +36,17 @@ export default {
             this.items = TODOS
             this.todoId = TODOS[0].id // 把菜单数据的默认的第一个对象的id赋值给默认选中的id
         })
+        this.$store.dispatch("getTodo").then(() => {
+            //调用vuex actions.js 里面的 getTodo函数
+            this.$nextTick(() => {
+                this.goList(this.todoList[0].id)
+            })
+        })
+    },
+    computed: {
+        todoList() {
+            return this.$store.getters.getTodoList // 返回vuex getters.js 定义的getTodoList数据
+        },
     },
     watch: {
         todoId(id) {
@@ -49,13 +61,14 @@ export default {
         },
         addTodoList() {
             // 点击新增按钮时候
-            // 调用新增菜单的接口，在接口调用成功在请求数据
-            addTodo({}).then(res => {
-                getTodoList({}).then(res => {
-                    const TODOS = res.data.todos
-                    this.items = TODOS
-                    this.todoId = TODOS[TODOS.length - 1].id // 把菜单数据的默认的第一个对象的id赋值给默认选中的id
-                    console.log(this.items)
+            //调用vuex actions.js 里面的 getTodo函数
+            addTodo({}).then(data => {
+                this.$store.dispatch("getTodo").then(() => {
+                    this.$nextTick(() => {
+                        setTimeout(() => {
+                            this.goList(this.todoList[this.todoList.length - 1].id)
+                        }, 100)
+                    })
                 })
             })
         },

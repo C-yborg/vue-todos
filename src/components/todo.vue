@@ -2,6 +2,22 @@
     <div class="page lists-show">
         <!-- 头部模块 -->
         <nav>
+            <div class="form list-edit-form" v-show="isUpdate">
+                <!-- 当用户点击标题进入修改状态，就显示当前内容可以修改 -->
+
+                <input
+                    type="text"
+                    v-model="todo.title"
+                    @keyup.enter="updateTitle"
+                    :disabled="todo.locked"
+                />
+
+                <div class="nav-group right">
+                    <a class="nav-item" @click="isUpdate = false">
+                        + <span class="icon-close"> + </span> +
+                    </a>
+                </div>
+            </div>
             <!-- 当用户浏览车窗口尺寸小于40em时候，显示手机端的菜单图标 -->
             <div class="nav-group" @click="$store.dispatch('updateMenu')" v-show="!isUpdate">
                 <a class="nav-item">
@@ -9,14 +25,14 @@
                 </a>
             </div>
             <!-- 显示标题和数字模块 -->
-            <h1 class="title-page">
+            <h1 class="title-page" v-show="!isUpdate" @click="isUpdate = true">
                 <span class="title-wrapper">{{ todo.title }}</span>
                 <!-- title:标题 绑定标题 -->
                 <span class="count-list">{{ todo.count || 0 }}</span
                 ><!-- count:数量 绑定代办单项熟练-->
             </h1>
             <!-- 右边显示删除图标和锁定图标的模块 -->
-            <div class="nav-group right">
+            <div class="nav-group right" v-show="!isUpdate">
                 <div class="options-web">
                     <a class=" nav-item">
                         <!-- cicon-lock锁定的图标
@@ -31,7 +47,7 @@
                 </div>
             </div>
             <!-- 用户新增代办事项的input模块 -->
-            <div class=" form todo-new input-symbol">
+            <div class=" form todo-new input-symbol" v-show="isUpdate">
                 <!-- 绑定disabled值，当todo.locked为绑定的时候，禁止input输入 -->
                 <input
                     type="text"
@@ -107,6 +123,19 @@ export default {
                 this.init()
                 //请求成功后初始化
             })
+        },
+        updateTodo() {
+            let _this = this
+            editTodo({
+                todo: this.todo,
+            }).then(data => {
+                // _this.init();
+                _this.$store.dispatch("getTodo")
+            })
+        },
+        updateTitle() {
+            this.updateTodo()
+            this.isUpdate = false
         },
     },
 }
